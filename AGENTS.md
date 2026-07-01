@@ -21,7 +21,7 @@ At minimum, check:
 
 Focus on the first end-to-end Slack + GitHub milestone:
 
-1. setup CLI creates local env, bootstrap code, `.cinnamon/logs`, and `memory.md`
+1. setup CLI creates local env, bootstrap code, `.cinnamon/logs`, SQLite DB, and `memory.md`
 2. Slack bootstrap registers the first admin
 3. Slack repo subscription uses a GitHub-Slack-App-like feature model
 4. GitHub webhook events create Slack parent cards and thread updates

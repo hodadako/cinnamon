@@ -1,4 +1,4 @@
-# AI Agent Connector Bot PRD 초안
+# AI Agent Connector Bot PRD
 
 ## 1. 배경
 
@@ -232,11 +232,12 @@
 8. 최초 admin 등록 코드는 1회 사용 후 폐기하고, 만료 시간을 둔다.
 9. 이후 admin은 Slack 자연어 명령으로 admin/write 권한을 가진 user id 또는 user group을 추가/삭제할 수 있다.
 10. 권한 변경은 적용 전 변경 요약을 보여주고 admin `yes` 승인을 받은 뒤 적용한다.
-11. env는 최초 admin bootstrap code, admin/write user id 목록, admin/write user group 목록의 저장소로 사용한다.
-12. env의 admin 목록 또는 admin user group에 포함된 사용자만 권한 정책, allowlist, production write, 조직 전체 MCP/Skill 활성화를 승인할 수 있다.
-13. 관리자 정책이 사용자 선호보다 우선한다.
-14. 모든 요청, 승인, 거절, 실행 명령, 결과, 실패 사유는 항상 감사 로그에 저장한다.
-15. 인프라 write 작업은 GitHub write 작업보다 높은 기본 위험도로 분류한다.
+11. env는 최초 admin bootstrap seed, emergency admin/write override, allowlist, secret/path 설정의 저장소로 사용한다.
+12. SQLite는 Slack bootstrap 이후 추가/삭제되는 admin/write user id 및 user group grant의 durable 저장소로 사용한다.
+13. env emergency admin 목록, DB admin grant, 또는 admin user group에 포함된 사용자만 권한 정책, allowlist, production write, 조직 전체 MCP/Skill 활성화를 승인할 수 있다.
+14. 관리자 정책이 사용자 선호보다 우선한다.
+15. 모든 요청, 승인, 거절, 실행 명령, 결과, 실패 사유는 항상 감사 로그에 저장한다.
+16. 인프라 write 작업은 GitHub write 작업보다 높은 기본 위험도로 분류한다.
 
 ### 6.9 자연어 기반 설정 관리
 
@@ -274,10 +275,11 @@
    - AWS role/region/profile
    - Terraform workspace/backend 기본값
    - MCP/Skill allowlist
-   - `memory.md` 경로
+   - `memory.md` 경로. MVP 기본값은 repo 루트 `memory.md`
    - 내부 로그 저장 경로
+   - SQLite DB 경로
 7. setup CLI는 입력값 검증, 필수 값 누락 검사, secret 마스킹, 연결 테스트를 수행한다.
-8. 생성된 env 값은 런타임에서 권한과 allowlist의 단일 진실 공급원으로 사용한다.
+8. 생성된 env 값은 bootstrap 설정, secret/path, allowlist, emergency override의 단일 진실 공급원으로 사용하고, Slack에서 변경되는 durable 권한 grant는 SQLite에 저장한다.
 9. Slack 자연어 설정은 운영 중 변경 경로이고, setup CLI는 서버 부트스트랩과 break-glass 재설정 경로로 사용한다.
 10. 최초 admin 등록 전에는 setup CLI가 출력한 bootstrap code를 Slack에서 입력하는 명령만 허용한다.
 
@@ -316,7 +318,7 @@
    - repo checkout, command execution, secret access 범위를 제한한다.
    - production 인프라 변경은 별도 정책과 추가 승인을 적용할 수 있어야 한다.
    - Slack workspace, 채널, 사용자, MCP, Skill allowlist는 env로 관리한다.
-   - write/admin 권한도 env로 관리하며 런타임에서 항상 검사한다.
+   - write/admin emergency override는 env로 관리하고, Slack에서 변경되는 durable grant는 SQLite에 저장하며, 런타임에서 항상 검사한다.
    - local/prod 모두 서버 내부 로컬 env 파일을 사용할 수 있다.
    - env 파일은 setup CLI로 생성할 수 있고, secret 값은 로그에 노출하지 않는다.
 2. 신뢰성
@@ -348,13 +350,12 @@
 7. 사용자 승인 후 GitHub 코멘트 게시
 8. Terraform 코드 수정, validate, plan 실행
 9. 사용자 `yes` 승인 후 제한된 Terraform/AWS write 작업
-10. 팀 메모리 Markdown 파일
-11. 모든 작업/설정/승인 로그
+10. repo 루트 `memory.md` 기반 팀 메모리
+11. SQLite 기반 queryable state와 JSONL 기반 audit/operation log
 12. 서버 내부 저장 로그 조회 및 장애 분석
 13. 초기 서버 설정 CLI 및 로컬 env 생성
-14. `memory.md` 기반 팀 메모리
-15. MCP 서버 1개와 Skill 로딩의 최소 경로
-16. 자연어 기반 repo 구독, MCP, Skill 설정 변경
+14. MCP 서버 1개와 Skill 로딩의 최소 경로
+15. 자연어 기반 repo 구독, MCP, Skill 설정 변경
 
 ### 제외
 
@@ -456,9 +457,27 @@
 
 MVP 구현을 막는 오픈 질문은 없다. 세부 구현 중 발견되는 tradeoff는 구현 스펙 또는 후속 ADR로 기록한다.
 
-## 13. 피드백 요청 항목
+## 13. MVP 구현 결정
 
-아래 항목에 답하면 다음 버전 PRD에서 MVP 범위와 구현 순서를 확정할 수 있다.
+아래 결정은 `docs/mvp-implementation-spec.md`의 구현 step과 동기화된 MVP 기준이다.
+
+1. 구현 언어는 TypeScript로 유지한다.
+2. Slack은 Bolt와 Socket Mode로 구현한다.
+3. Slack 명령은 단일 `/cinnamon` slash command와 subcommand 모델로 시작한다.
+4. GitHub webhook은 일반 HTTP endpoint인 `POST /webhooks/github`로 받고, 로컬/내부 배포에서 공개 HTTPS URL이 없으면 Cloudflare Tunnel을 사용한다.
+5. GitHub webhook idempotency key는 `X-GitHub-Delivery` 값을 저장한다.
+6. queryable product state는 SQLite와 `better-sqlite3`를 사용한다.
+7. append-only audit/operation log는 서버 내부 JSONL로 저장한다.
+8. migration은 repo 안의 ordered SQL file을 실행하는 단순 SQL migration runner로 시작한다.
+9. Supabase/Postgres는 다중 서버, 외부 고객용 multi-tenant, 운영 콘솔, 높은 이벤트 처리량이 필요해질 때의 후속 migration target이다.
+10. job 실행은 queue interface 뒤에 숨기고, MVP 구현은 in-process runner로 시작한다.
+11. AI runtime은 AI agent adapter interface 뒤에 둔다. Codex가 첫 working adapter이고 Claude는 skeleton adapter로 둔다.
+12. 팀 메모리는 repo 루트 `memory.md`에 저장하고, 실제 `memory.md`는 gitignore하며 `memory.example.md`만 예시로 추적한다.
+13. GitHub PR review/comment에는 `Posted by Cinnamon bot after Slack approval from <@SLACK_USER_ID>.` disclosure를 붙인다.
+
+## 14. 결정 기록
+
+아래 항목은 현재 MVP 범위와 구현 순서에 반영된 결정 기록이다.
 
 1. 첫 커넥터
    - 결정: Slack 먼저 출시, Discord는 후속 확장
@@ -513,9 +532,9 @@ MVP 구현을 막는 오픈 질문은 없다. 세부 구현 중 발견되는 tra
 18. GitHub bot disclosure
    - 결정: GitHub PR review/comment에는 `Posted by Cinnamon bot after Slack approval from <@SLACK_USER_ID>.` 문구를 붙인다.
 
-## 14. 초안 기준 기본 결정안
+## 15. MVP 기본 결정안
 
-피드백 전 임시 기준은 다음과 같다. 사용자가 반대하거나 우선순위를 바꾸면 PRD를 즉시 조정한다.
+현재 MVP 기본 결정안은 다음과 같다. 사용자가 반대하거나 우선순위를 바꾸면 PRD와 구현 스펙을 함께 조정한다.
 
 1. Phase 1은 Slack + GitHub PR Assistant로 시작한다.
 2. GitHub 인증은 bot 계정과 `gh` CLI를 우선 사용한다.
@@ -526,7 +545,7 @@ MVP 구현을 막는 오픈 질문은 없다. 세부 구현 중 발견되는 tra
 7. 운영 콘솔은 MVP에서 제외하고 setup CLI로 생성한 로컬 env, Slack 자연어 설정, 작업 로그로 대체한다.
 8. Terraform/AWS는 plan-first workflow로 제공하고, 모든 write는 Slack `yes` 승인 후 허용한다.
 9. AWS 권한은 bot 전용 IAM role과 short-lived session을 우선 사용한다.
-10. Slack/MCP/Skill allowlist와 admin/write 권한은 setup CLI가 생성한 로컬 env로 관리한다.
+10. Slack/MCP/Skill allowlist와 emergency admin/write override는 setup CLI가 생성한 로컬 env로 관리하고, 운영 중 admin/write grant는 SQLite에 저장한다.
 11. repo 구독, MCP/Skill 등록, 메모리, 알림 필터는 Slack 자연어 설정 명령을 기본 경로로 제공한다.
 12. 모든 로그는 항상 남긴다.
 13. 첫 로그/모니터링 소스는 서버 내부 저장 로그이며, Slack 자연어로 조회/분석한다.

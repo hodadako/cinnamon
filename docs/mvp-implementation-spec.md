@@ -108,6 +108,7 @@ packages/
     src/
       setup.ts
       bootstrap-code.ts
+memory.example.md
 memory.md
 docs/
 ```
@@ -569,6 +570,7 @@ memory.md
 ```
 
 `memory.md` lives at the repository root for MVP.
+The real `memory.md` is gitignored. Track `memory.example.md` as the template/default content for new setups.
 
 ### 13.2 Initial content
 
