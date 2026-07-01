@@ -1,0 +1,18 @@
+{
+  "name": "@cinnamon/cli",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "cinnamon-setup": "dist/setup.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "setup": "node dist/setup.js"
+  },
+  "dependencies": {
+    "@cinnamon/core": "workspace:*"
+  }
+}

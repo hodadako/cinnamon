@@ -11,5 +11,7 @@
 
 /.idea
 node_modules
+dist
+.pnpm-store/
 .serena/
 memory.md
