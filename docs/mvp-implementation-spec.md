@@ -66,7 +66,7 @@ Cinnamon MVP는 개인용/내부용 Slack 봇으로 시작한다. 첫 성공 기
 6. production 인프라 자동 apply
 7. 복잡한 큐/분산 작업 시스템
 
-Terraform/AWS, MCP/Skill은 인터페이스와 승인/로그 정책은 남겨두되, MVP 첫 milestone에서는 stub 또는 skeleton까지만 둔다.
+Discord, Terraform/AWS, MCP/Skill은 인터페이스와 승인/로그 정책은 남겨두되, MVP 첫 milestone에서는 stub 또는 skeleton까지만 둔다.
 
 ## 5. 권장 레포 구조
 
@@ -83,6 +83,12 @@ apps/
       handlers/
     package.json
 packages/
+  connectors/
+    src/
+      types.ts
+  discord-connector/
+    src/
+      discord-connector.ts
   core/
     src/
       config/

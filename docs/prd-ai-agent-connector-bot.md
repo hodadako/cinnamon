@@ -78,6 +78,7 @@
    - interactive action handling
    - identity mapping
 4. 커넥터별 메시지 포맷 차이를 숨기고, 코어 작업 엔진은 동일한 요청 모델을 사용한다.
+5. MVP 구현은 Slack connector를 실제 런타임으로 제공하고, Discord는 같은 인터페이스를 따르는 skeleton adapter부터 둔다.
 
 ### 6.2 자연어 작업 라우팅
 

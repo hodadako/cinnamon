@@ -20,6 +20,9 @@ importers:
       '@cinnamon/agents':
         specifier: workspace:*
         version: link:../../packages/agents
+      '@cinnamon/connectors':
+        specifier: workspace:*
+        version: link:../../packages/connectors
       '@cinnamon/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -38,11 +41,19 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/connectors: {}
+
   packages/core:
     dependencies:
       better-sqlite3:
         specifier: ^12.5.0
         version: 12.11.1
+
+  packages/discord-connector:
+    dependencies:
+      '@cinnamon/connectors':
+        specifier: workspace:*
+        version: link:../connectors
 
   packages/github: {}
 
