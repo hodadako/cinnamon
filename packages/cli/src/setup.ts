@@ -5,7 +5,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { parseEnvFile, serializeEnvFile } from "@cinnamon/core";
+import { createJsonlLogger, openCinnamonDatabase, parseEnvFile, serializeEnvFile } from "@cinnamon/core";
 
 export interface SetupOptions {
   envPath: string;
@@ -42,6 +42,20 @@ export async function runSetup(options: Partial<SetupOptions> = {}): Promise<Set
   await mkdir(values.CINNAMON_LOG_DIR, { recursive: true });
   await mkdir(dirname(values.CINNAMON_DB_PATH), { recursive: true });
   await ensureMemoryFile(resolved.memoryPath);
+  const openedDatabase = openCinnamonDatabase(values.CINNAMON_DB_PATH);
+  openedDatabase.close();
+  const logger = createJsonlLogger(values.CINNAMON_LOG_DIR);
+  await logger.log({
+    level: "info",
+    component: "setup-cli",
+    event: "setup.completed",
+    data: {
+      envPath: resolved.envPath,
+      memoryPath: resolved.memoryPath,
+      dbPath: values.CINNAMON_DB_PATH,
+      appliedMigrations: openedDatabase.appliedMigrations
+    }
+  });
   await writeFile(resolved.envPath, serializeEnvFile(values), { encoding: "utf8", flag: resolved.force ? "w" : "wx" });
 
   return {

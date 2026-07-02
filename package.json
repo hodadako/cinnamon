@@ -12,9 +12,21 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": "24.18.0"
+  },
   "packageManager": "pnpm@10.27.0",
   "devDependencies": {
-    "@types/node": "^25.9.1",
+    "@types/node": "^24.0.0",
     "typescript": "^6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  },
+  "volta": {
+    "node": "24.18.0",
+    "pnpm": "10.27.0"
   }
 }
