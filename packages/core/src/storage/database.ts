@@ -6,9 +6,10 @@ import { coreMigrations } from "./migrations";
 interface BetterSqliteStatement {
   run(...params: unknown[]): unknown;
   all(...params: unknown[]): unknown[];
+  get(...params: unknown[]): unknown;
 }
 
-interface BetterSqliteDatabase {
+export interface BetterSqliteDatabase {
   exec(sql: string): void;
   prepare(sql: string): BetterSqliteStatement;
   transaction<T extends (...args: never[]) => unknown>(fn: T): T;

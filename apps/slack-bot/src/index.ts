@@ -1,4 +1,4 @@
-import { createJsonlLogger, getConfigIssues, loadCinnamonConfig, summarizeConfig } from "@cinnamon/core";
+import { createJsonlLogger, getConfigIssues, loadCinnamonConfig, openCinnamonDatabase, summarizeConfig } from "@cinnamon/core";
 import { createCinnamonSlackApp } from "./slack-app";
 
 async function main(): Promise<void> {
@@ -21,7 +21,11 @@ async function main(): Promise<void> {
   }
 
   const logger = createJsonlLogger(config.logDir);
-  const slackApp = createCinnamonSlackApp(config, logger);
+  const openedDatabase = openCinnamonDatabase(config.dbPath);
+  const slackApp = createCinnamonSlackApp(config, {
+    database: openedDatabase.database,
+    logger
+  });
   await slackApp.start();
   console.log("Slack bot is running in Socket Mode.");
 }

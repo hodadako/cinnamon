@@ -44,6 +44,20 @@ export function renderCommandResponse(command: CinnamonCommand): string {
   }
 }
 
+export function parseRepoName(value: string | undefined): { owner: string; name: string } | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const [owner, name] = value.split("/");
+
+  if (!owner || !name) {
+    return undefined;
+  }
+
+  return { owner, name };
+}
+
 function renderPrCommandResponse(args: string[]): string {
   if (args[0] === "summary") {
     return "PR summary flow is wired after the GitHub adapter. This command is recognized.";

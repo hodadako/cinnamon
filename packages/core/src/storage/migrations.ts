@@ -35,5 +35,21 @@ export const coreMigrations: SqlMigration[] = [
         updated_at TEXT NOT NULL
       );
     `
+  },
+  {
+    id: "0003_repo_subscriptions",
+    sql: `
+      CREATE TABLE IF NOT EXISTS repo_subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel_id TEXT NOT NULL,
+        repo_owner TEXT NOT NULL,
+        repo_name TEXT NOT NULL,
+        features TEXT NOT NULL,
+        created_by_slack_user_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(channel_id, repo_owner, repo_name)
+      );
+    `
   }
 ];
