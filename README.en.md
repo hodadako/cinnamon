@@ -17,7 +17,7 @@ The first milestone is an end-to-end Slack + GitHub PR workflow.
 
 ## Product Decisions
 
-- Slack is the first connector. Discord and other connectors come later.
+- Slack is the first success path. Discord is added as another runtime on the same connector interface.
 - GitHub starts with a bot account and the `gh` CLI.
 - PR notifications follow a repo + feature subscription model similar to the GitHub Slack App.
 - Queryable state uses SQLite and `better-sqlite3`.

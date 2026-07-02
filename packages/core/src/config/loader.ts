@@ -23,6 +23,13 @@ export function loadCinnamonConfig(source: Record<string, string | undefined>): 
       channelAllowlist: readList(source.SLACK_CHANNEL_ALLOWLIST),
       userAllowlist: readList(source.SLACK_USER_ALLOWLIST)
     },
+    discord: {
+      botToken: emptyToUndefined(source.DISCORD_BOT_TOKEN),
+      clientId: emptyToUndefined(source.DISCORD_CLIENT_ID),
+      guildAllowlist: readList(source.DISCORD_GUILD_ALLOWLIST),
+      channelAllowlist: readList(source.DISCORD_CHANNEL_ALLOWLIST),
+      userAllowlist: readList(source.DISCORD_USER_ALLOWLIST)
+    },
     github: {
       botUsername: emptyToUndefined(source.GITHUB_BOT_USERNAME),
       token: emptyToUndefined(source.GITHUB_TOKEN),
@@ -66,6 +73,7 @@ export function summarizeConfig(config: CinnamonConfig): Record<string, string> 
     dbPath: config.dbPath,
     httpPort: String(config.httpPort),
     slackWorkspaceAllowlist: String(config.slack.workspaceAllowlist.length),
+    discordGuildAllowlist: String(config.discord.guildAllowlist.length),
     githubRepoAllowlist: String(config.github.repoAllowlist.length)
   };
 }

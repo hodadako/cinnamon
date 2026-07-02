@@ -1,5 +1,5 @@
 {
-  "name": "@cinnamon/slack-bot",
+  "name": "@cinnamon/discord-bot",
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.js",
@@ -10,11 +10,9 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@cinnamon/agents": "workspace:*",
     "@cinnamon/bot-runtime": "workspace:*",
-    "@cinnamon/connectors": "workspace:*",
     "@cinnamon/core": "workspace:*",
-    "@cinnamon/github": "workspace:*",
-    "@slack/bolt": "^4.7.3"
+    "@cinnamon/discord-connector": "workspace:*",
+    "discord.js": "^14.26.4"
   }
 }

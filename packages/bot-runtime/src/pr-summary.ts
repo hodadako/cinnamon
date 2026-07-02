@@ -5,7 +5,7 @@ export async function summarizePullRequest(url: string): Promise<string> {
   const ref = parseGitHubPullRequestUrl(url);
 
   if (!ref) {
-    return "Usage: `/cinnamon pr summary <github-pr-url>`";
+    return "Usage: `pr summary <github-pr-url>`";
   }
 
   const pullRequest = await getPullRequestDetails(ref);

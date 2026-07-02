@@ -15,6 +15,13 @@ export interface CinnamonConfig {
     channelAllowlist: string[];
     userAllowlist: string[];
   };
+  discord: {
+    botToken?: string;
+    clientId?: string;
+    guildAllowlist: string[];
+    channelAllowlist: string[];
+    userAllowlist: string[];
+  };
   github: {
     botUsername?: string;
     token?: string;

@@ -21,13 +21,16 @@ export class DiscordConnectorAdapter implements ConnectorAdapter<DiscordCommandL
 
   normalizeCommand(command: DiscordCommandLike): NormalizedConnectorCommand {
     const text = command.text ?? command.args?.join(" ") ?? "";
-    const args = command.args ?? text.split(/\s+/).filter(Boolean);
+    const rawArgs = command.args ?? text.split(/\s+/).filter(Boolean);
+    const commandName = command.commandName.toLowerCase();
+    const [normalizedCommand = "help", ...normalizedArgs] =
+      commandName === "cinnamon" ? rawArgs : [commandName, ...rawArgs];
 
     return {
       connector: this.kind,
-      command: command.commandName.toLowerCase(),
+      command: normalizedCommand.toLowerCase(),
       text,
-      args,
+      args: normalizedArgs,
       user: {
         id: command.userId,
         displayName: command.userName

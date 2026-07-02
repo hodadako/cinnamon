@@ -1,20 +1,17 @@
 {
-  "name": "@cinnamon/slack-bot",
+  "name": "@cinnamon/bot-runtime",
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "start": "node dist/index.js"
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@cinnamon/agents": "workspace:*",
-    "@cinnamon/bot-runtime": "workspace:*",
     "@cinnamon/connectors": "workspace:*",
     "@cinnamon/core": "workspace:*",
-    "@cinnamon/github": "workspace:*",
-    "@slack/bolt": "^4.7.3"
+    "@cinnamon/github": "workspace:*"
   }
 }

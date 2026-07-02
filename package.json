@@ -7,7 +7,8 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "setup": "pnpm --filter @cinnamon/cli setup",
-    "slack-bot": "pnpm --filter @cinnamon/slack-bot start"
+    "slack-bot": "pnpm --filter @cinnamon/slack-bot start",
+    "discord-bot": "pnpm --filter @cinnamon/discord-bot start"
   },
   "keywords": [],
   "author": "",
