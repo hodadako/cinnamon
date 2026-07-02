@@ -11,6 +11,13 @@ export interface RepoSubscriptionInput {
   createdBySlackUserId: string;
 }
 
+export interface IdempotencyInput {
+  key: string;
+  source: string;
+  externalId?: string;
+  status: string;
+}
+
 export function getSetting(database: BetterSqliteDatabase, key: string): string | undefined {
   const row = database.prepare("SELECT value FROM app_settings WHERE key = ?").get(key) as
     | { value: string }
@@ -97,4 +104,16 @@ export function upsertRepoSubscription(database: BetterSqliteDatabase, input: Re
         updated_at = excluded.updated_at`
     )
     .run(input.channelId, input.repoOwner, input.repoName, features, input.createdBySlackUserId, now, now);
+}
+
+export function recordIdempotencyKey(database: BetterSqliteDatabase, input: IdempotencyInput): boolean {
+  const now = new Date().toISOString();
+  const result = database
+    .prepare(
+      `INSERT OR IGNORE INTO idempotency_keys (key, source, external_id, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    )
+    .run(input.key, input.source, input.externalId, input.status, now, now) as { changes?: number };
+
+  return result.changes === 1;
 }

@@ -1,4 +1,5 @@
 import { createJsonlLogger, getConfigIssues, loadCinnamonConfig, openCinnamonDatabase, summarizeConfig } from "@cinnamon/core";
+import { createGitHubWebhookServer } from "./github-webhook";
 import { createCinnamonSlackApp } from "./slack-app";
 
 async function main(): Promise<void> {
@@ -22,6 +23,20 @@ async function main(): Promise<void> {
 
   const logger = createJsonlLogger(config.logDir);
   const openedDatabase = openCinnamonDatabase(config.dbPath);
+
+  if (config.github.webhookSecret) {
+    const githubWebhookServer = createGitHubWebhookServer({
+      port: config.httpPort,
+      secret: config.github.webhookSecret,
+      database: openedDatabase.database,
+      logger
+    });
+
+    githubWebhookServer.listen(config.httpPort, () => {
+      console.log(`GitHub webhook endpoint listening on http://localhost:${config.httpPort}/webhooks/github`);
+    });
+  }
+
   const slackApp = createCinnamonSlackApp(config, {
     database: openedDatabase.database,
     logger

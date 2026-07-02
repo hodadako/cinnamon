@@ -6,6 +6,7 @@ export interface CinnamonConfig {
   memoryPath: string;
   logDir: string;
   dbPath: string;
+  httpPort: number;
   slack: {
     botToken?: string;
     signingSecret?: string;

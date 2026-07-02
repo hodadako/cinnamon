@@ -76,6 +76,7 @@ export function buildDefaultEnv(options: SetupOptions, bootstrapCode: string): R
     CINNAMON_MEMORY_PATH: options.memoryPath,
     CINNAMON_LOG_DIR: `${options.dataDir}/logs`,
     CINNAMON_DB_PATH: `${options.dataDir}/cinnamon.db`,
+    CINNAMON_HTTP_PORT: "3000",
     CINNAMON_BOOTSTRAP_CODE_HASH: bootstrapCodeHash,
     SLACK_BOT_TOKEN: "",
     SLACK_SIGNING_SECRET: "",

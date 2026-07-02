@@ -6,6 +6,7 @@ export function loadCinnamonConfig(source: Record<string, string | undefined>): 
   const memoryPath = source.CINNAMON_MEMORY_PATH ?? "memory.md";
   const logDir = source.CINNAMON_LOG_DIR ?? `${dataDir}/logs`;
   const dbPath = source.CINNAMON_DB_PATH ?? `${dataDir}/cinnamon.db`;
+  const httpPort = readNumber(source.CINNAMON_HTTP_PORT, 3000);
 
   return {
     env,
@@ -13,6 +14,7 @@ export function loadCinnamonConfig(source: Record<string, string | undefined>): 
     memoryPath,
     logDir,
     dbPath,
+    httpPort,
     slack: {
       botToken: emptyToUndefined(source.SLACK_BOT_TOKEN),
       signingSecret: emptyToUndefined(source.SLACK_SIGNING_SECRET),
@@ -62,6 +64,7 @@ export function summarizeConfig(config: CinnamonConfig): Record<string, string> 
     memoryPath: config.memoryPath,
     logDir: config.logDir,
     dbPath: config.dbPath,
+    httpPort: String(config.httpPort),
     slackWorkspaceAllowlist: String(config.slack.workspaceAllowlist.length),
     githubRepoAllowlist: String(config.github.repoAllowlist.length)
   };
@@ -88,4 +91,13 @@ function readList(value: string | undefined): string[] {
 
 function emptyToUndefined(value: string | undefined): string | undefined {
   return value && value.trim().length > 0 ? value : undefined;
+}
+
+function readNumber(value: string | undefined, fallback: number): number {
+  if (!value) {
+    return fallback;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }

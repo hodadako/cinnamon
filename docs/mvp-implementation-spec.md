@@ -396,6 +396,18 @@ POST /webhooks/github
 
 For local development, expose this HTTP endpoint through Cloudflare Tunnel. Production/internal deployment should use a named persistent Cloudflare Tunnel when the server does not have a public HTTPS URL.
 
+Local development example:
+
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+
+Set the GitHub webhook URL to:
+
+```text
+https://<generated-tunnel-host>/webhooks/github
+```
+
 ### 10.2 Required behavior
 
 1. Verify webhook signature.
