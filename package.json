@@ -8,7 +8,8 @@
     "typecheck": "pnpm -r typecheck",
     "setup": "pnpm --filter @cinnamon/cli setup",
     "slack-bot": "pnpm --filter @cinnamon/slack-bot start",
-    "discord-bot": "pnpm --filter @cinnamon/discord-bot start"
+    "discord-bot": "pnpm --filter @cinnamon/discord-bot start",
+    "telegram-bot": "pnpm --filter @cinnamon/telegram-bot start"
   },
   "keywords": [],
   "author": "",

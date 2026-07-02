@@ -1,4 +1,4 @@
-export type ConnectorKind = "slack" | "discord" | (string & {});
+export type ConnectorKind = "slack" | "discord" | "telegram" | (string & {});
 
 export type ConnectorMessageVisibility = "ephemeral" | "channel" | "dm";
 

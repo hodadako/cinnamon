@@ -17,7 +17,7 @@ Slack에서 GitHub PR 알림을 받고, PR 요약과 리뷰를 요청하고, 개
 
 ## 주요 결정
 
-- Slack이 첫 성공 경로입니다. Discord는 같은 connector interface 위의 추가 런타임으로 붙입니다.
+- Slack이 첫 성공 경로입니다. Discord와 Telegram은 같은 connector interface 위의 추가 런타임으로 붙입니다.
 - GitHub는 bot 계정과 `gh` CLI로 시작합니다.
 - PR 알림은 Slack GitHub App처럼 repo + feature 구독 모델을 따릅니다.
 - 상태 저장은 SQLite와 `better-sqlite3`를 기본으로 합니다.

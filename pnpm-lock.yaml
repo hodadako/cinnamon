@@ -51,6 +51,18 @@ importers:
         specifier: ^4.7.3
         version: 4.7.3(@types/express@5.0.6)
 
+  apps/telegram-bot:
+    dependencies:
+      '@cinnamon/bot-runtime':
+        specifier: workspace:*
+        version: link:../../packages/bot-runtime
+      '@cinnamon/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cinnamon/telegram-connector':
+        specifier: workspace:*
+        version: link:../../packages/telegram-connector
+
   packages/agents: {}
 
   packages/bot-runtime:
@@ -89,6 +101,12 @@ importers:
         version: link:../connectors
 
   packages/github: {}
+
+  packages/telegram-connector:
+    dependencies:
+      '@cinnamon/connectors':
+        specifier: workspace:*
+        version: link:../connectors
 
 packages:
 

@@ -66,7 +66,7 @@ Cinnamon MVP는 개인용/내부용 Slack 봇으로 시작한다. 첫 성공 기
 6. production 인프라 자동 apply
 7. 복잡한 큐/분산 작업 시스템
 
-Discord는 공통 connector interface와 기본 slash command runtime을 제공하되, MVP 첫 milestone의 성공 기준은 Slack + GitHub PR workflow로 유지한다. Terraform/AWS, MCP/Skill은 인터페이스와 승인/로그 정책은 남겨두되, MVP 첫 milestone에서는 stub 또는 skeleton까지만 둔다.
+Discord와 Telegram은 공통 connector interface와 기본 command runtime을 제공하되, MVP 첫 milestone의 성공 기준은 Slack + GitHub PR workflow로 유지한다. Terraform/AWS, MCP/Skill은 인터페이스와 승인/로그 정책은 남겨두되, MVP 첫 milestone에서는 stub 또는 skeleton까지만 둔다.
 
 ## 5. 권장 레포 구조
 
@@ -86,6 +86,10 @@ apps/
     src/
       index.ts
     package.json
+  telegram-bot/
+    src/
+      index.ts
+    package.json
 packages/
   connectors/
     src/
@@ -93,6 +97,9 @@ packages/
   discord-connector/
     src/
       discord-connector.ts
+  telegram-connector/
+    src/
+      telegram-connector.ts
   core/
     src/
       config/

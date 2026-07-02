@@ -30,6 +30,11 @@ export function loadCinnamonConfig(source: Record<string, string | undefined>): 
       channelAllowlist: readList(source.DISCORD_CHANNEL_ALLOWLIST),
       userAllowlist: readList(source.DISCORD_USER_ALLOWLIST)
     },
+    telegram: {
+      botToken: emptyToUndefined(source.TELEGRAM_BOT_TOKEN),
+      chatAllowlist: readList(source.TELEGRAM_CHAT_ALLOWLIST),
+      userAllowlist: readList(source.TELEGRAM_USER_ALLOWLIST)
+    },
     github: {
       botUsername: emptyToUndefined(source.GITHUB_BOT_USERNAME),
       token: emptyToUndefined(source.GITHUB_TOKEN),
@@ -74,6 +79,7 @@ export function summarizeConfig(config: CinnamonConfig): Record<string, string> 
     httpPort: String(config.httpPort),
     slackWorkspaceAllowlist: String(config.slack.workspaceAllowlist.length),
     discordGuildAllowlist: String(config.discord.guildAllowlist.length),
+    telegramChatAllowlist: String(config.telegram.chatAllowlist.length),
     githubRepoAllowlist: String(config.github.repoAllowlist.length)
   };
 }

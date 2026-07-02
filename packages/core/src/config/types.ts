@@ -22,6 +22,11 @@ export interface CinnamonConfig {
     channelAllowlist: string[];
     userAllowlist: string[];
   };
+  telegram: {
+    botToken?: string;
+    chatAllowlist: string[];
+    userAllowlist: string[];
+  };
   github: {
     botUsername?: string;
     token?: string;
