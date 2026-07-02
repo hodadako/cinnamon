@@ -24,6 +24,8 @@ importers:
         specifier: ^4.7.3
         version: 4.7.3(@types/express@5.0.6)
 
+  packages/agents: {}
+
   packages/cli:
     dependencies:
       '@cinnamon/core':
@@ -35,6 +37,8 @@ importers:
       better-sqlite3:
         specifier: ^12.5.0
         version: 12.11.1
+
+  packages/github: {}
 
 packages:
 

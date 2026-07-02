@@ -18,6 +18,15 @@ export interface IdempotencyInput {
   status: string;
 }
 
+export interface ThreadMappingInput {
+  channelId: string;
+  repoOwner: string;
+  repoName: string;
+  githubType: "pull_request" | "issue";
+  githubNumber: number;
+  threadTs: string;
+}
+
 export function getSetting(database: BetterSqliteDatabase, key: string): string | undefined {
   const row = database.prepare("SELECT value FROM app_settings WHERE key = ?").get(key) as
     | { value: string }
@@ -116,4 +125,56 @@ export function recordIdempotencyKey(database: BetterSqliteDatabase, input: Idem
     .run(input.key, input.source, input.externalId, input.status, now, now) as { changes?: number };
 
   return result.changes === 1;
+}
+
+export function upsertThreadMapping(database: BetterSqliteDatabase, input: ThreadMappingInput): void {
+  const now = new Date().toISOString();
+
+  database
+    .prepare(
+      `INSERT INTO thread_mappings (
+        channel_id,
+        repo_owner,
+        repo_name,
+        github_type,
+        github_number,
+        thread_ts,
+        created_at,
+        updated_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(channel_id, repo_owner, repo_name, github_type, github_number) DO UPDATE SET
+        thread_ts = excluded.thread_ts,
+        updated_at = excluded.updated_at`
+    )
+    .run(
+      input.channelId,
+      input.repoOwner,
+      input.repoName,
+      input.githubType,
+      input.githubNumber,
+      input.threadTs,
+      now,
+      now
+    );
+}
+
+export function findThreadMapping(
+  database: BetterSqliteDatabase,
+  input: Omit<ThreadMappingInput, "threadTs">
+): { threadTs: string } | undefined {
+  return database
+    .prepare(
+      `SELECT thread_ts AS threadTs
+       FROM thread_mappings
+       WHERE channel_id = ?
+         AND repo_owner = ?
+         AND repo_name = ?
+         AND github_type = ?
+         AND github_number = ?
+       LIMIT 1`
+    )
+    .get(input.channelId, input.repoOwner, input.repoName, input.githubType, input.githubNumber) as
+    | { threadTs: string }
+    | undefined;
 }

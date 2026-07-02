@@ -51,5 +51,22 @@ export const coreMigrations: SqlMigration[] = [
         UNIQUE(channel_id, repo_owner, repo_name)
       );
     `
+  },
+  {
+    id: "0004_thread_mappings",
+    sql: `
+      CREATE TABLE IF NOT EXISTS thread_mappings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel_id TEXT NOT NULL,
+        repo_owner TEXT NOT NULL,
+        repo_name TEXT NOT NULL,
+        github_type TEXT NOT NULL,
+        github_number INTEGER NOT NULL,
+        thread_ts TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(channel_id, repo_owner, repo_name, github_type, github_number)
+      );
+    `
   }
 ];
