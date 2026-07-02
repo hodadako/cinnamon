@@ -1,4 +1,5 @@
-import { getConfigIssues, loadCinnamonConfig, summarizeConfig } from "@cinnamon/core";
+import { createJsonlLogger, getConfigIssues, loadCinnamonConfig, summarizeConfig } from "@cinnamon/core";
+import { createCinnamonSlackApp } from "./slack-app";
 
 async function main(): Promise<void> {
   const config = loadCinnamonConfig(process.env);
@@ -12,9 +13,17 @@ async function main(): Promise<void> {
     for (const issue of issues) {
       console.log(`- ${issue.key}: ${issue.message}`);
     }
+
+    if (!config.slack.botToken || !config.slack.appToken) {
+      console.log("Slack bot did not start because Slack Socket Mode credentials are missing.");
+      return;
+    }
   }
 
-  console.log("Slack Bolt wiring is scheduled for the Slack command handling ticket.");
+  const logger = createJsonlLogger(config.logDir);
+  const slackApp = createCinnamonSlackApp(config, logger);
+  await slackApp.start();
+  console.log("Slack bot is running in Socket Mode.");
 }
 
 main().catch((error) => {
