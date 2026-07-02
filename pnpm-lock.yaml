@@ -17,9 +17,15 @@ importers:
 
   apps/slack-bot:
     dependencies:
+      '@cinnamon/agents':
+        specifier: workspace:*
+        version: link:../../packages/agents
       '@cinnamon/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@cinnamon/github':
+        specifier: workspace:*
+        version: link:../../packages/github
       '@slack/bolt':
         specifier: ^4.7.3
         version: 4.7.3(@types/express@5.0.6)

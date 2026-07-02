@@ -10,6 +10,7 @@ import {
 } from "@cinnamon/core";
 import type { BetterSqliteDatabase, CinnamonConfig, JsonlLogger } from "@cinnamon/core";
 import { parseCinnamonCommand, parseRepoName, renderCommandResponse } from "./commands";
+import { summarizePullRequest } from "./pr-summary";
 
 export interface CinnamonSlackApp {
   app: App;
@@ -37,7 +38,7 @@ export function createCinnamonSlackApp(config: CinnamonConfig, services: Cinnamo
     await ack();
 
     const parsedCommand = parseCinnamonCommand(command.text);
-    const response = handleCommand({
+    const response = await handleCommand({
       config,
       database: services.database,
       commandName: parsedCommand.name,
@@ -86,13 +87,21 @@ interface HandleCommandInput {
   channelId: string;
 }
 
-function handleCommand(input: HandleCommandInput): string {
+async function handleCommand(input: HandleCommandInput): Promise<string> {
   if (input.commandName === "bootstrap") {
     return handleBootstrapCommand(input);
   }
 
   if (input.commandName === "subscribe") {
     return handleSubscribeCommand(input);
+  }
+
+  if (input.commandName === "pr" && input.args[0] === "summary") {
+    try {
+      return await summarizePullRequest(input.args[1] ?? "");
+    } catch (error) {
+      return `Could not summarize PR: ${error instanceof Error ? error.message : "unknown error"}`;
+    }
   }
 
   return renderCommandResponse({
